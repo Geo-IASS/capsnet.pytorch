@@ -21,7 +21,8 @@ test_loader = torch.utils.data.DataLoader(
 
 model = CapsNet()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-criterion = DigitMarginLoss()
+margin_loss = DigitMarginLoss()
+reconstruction_loss = torch.nn.MSELoss(size_average=False)
 model.train()
 
 for epoch in range(1, 11):
@@ -30,8 +31,8 @@ for epoch in range(1, 11):
         input = Variable(input)
         target = Variable(target)
     
-        output = model(input)
-        loss = criterion(output, target)
+        digit_caps, reconstruction = model(input, target)
+        loss = margin_loss(digit_caps, target) + 0.0005 * reconstruction_loss(reconstruction, input.view(-1))
         epoch_tot_loss += loss
         
         optimizer.zero_grad()
