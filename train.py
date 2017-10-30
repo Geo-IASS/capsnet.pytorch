@@ -6,6 +6,7 @@ from torchvision import datasets
 import transforms
 from capsnet import CapsNet
 from loss import DigitMarginLoss
+from utils import accuracy
 
 
 train_loader = torch.utils.data.DataLoader(
@@ -27,6 +28,7 @@ model.train()
 
 for epoch in range(1, 11):
     epoch_tot_loss = 0
+    epoch_tot_acc = 0
     for batch, (input, target) in enumerate(train_loader, 1):
         input = Variable(input)
         target = Variable(target)
@@ -39,4 +41,8 @@ for epoch in range(1, 11):
         loss.backward(retain_graph=True)
         optimizer.step()
         
-        print(loss.data[0], (epoch_tot_loss / batch).data[0])
+        acc = accuracy(digit_caps, target)
+        epoch_tot_acc += acc
+
+        template = '[Epoch {}] Loss: {:.4f} ({:.4f}), Acc: {:.2f}%'
+        print(template.format(epoch, loss.data[0], (epoch_tot_loss / batch).data[0], 100 * (epoch_tot_acc / batch)))

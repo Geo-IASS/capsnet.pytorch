@@ -13,7 +13,7 @@ class Routing(nn.Module):
         self.num_shared = num_shared
 
         self.W = [nn.Linear(in_dim, out_dim, bias=False) for _ in range(num_shared)]
-        self.b = Variable(torch.zeros(num_in_caps, num_out_caps))
+        self.b = Variable(torch.zeros(num_out_caps, num_in_caps))
 
     def forward(self, input):
         # TODO: make it work for batch sizes > 1
@@ -27,8 +27,8 @@ class Routing(nn.Module):
         pred = torch.stack([torch.stack(p) for p in pred]).view(self.num_shared * h * w, -1)
 
         c = F.softmax(self.b)
-        s = torch.matmul(c.t(), pred).t()
-        v = squash(s)
+        s = torch.matmul(c, pred)
+        v = squash(s.t())
         self.b = torch.add(self.b, torch.matmul(pred, v))
         return v
 

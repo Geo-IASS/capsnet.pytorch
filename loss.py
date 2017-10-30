@@ -11,7 +11,7 @@ class DigitMarginLoss(nn.Module):
         self.l = l
 
     def forward(self, output, target):
-        norm = output.norm(dim=1)
+        norm = output.norm(dim=0)
         zero = Variable(torch.zeros(1))
         losses = [torch.max(zero, self.M - norm).pow(2) if digit == target.data[0]
             else self.l * torch.max(zero, norm - self.m).pow(2)
