@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch.nn.functional as F
 
 from routing import Routing
 
@@ -12,6 +13,7 @@ class CapsNet(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
+        x = F.relu(x)
         x = self.primary_caps(x)
         x = self.digit_caps(x)
         return x

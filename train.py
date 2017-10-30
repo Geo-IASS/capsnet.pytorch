@@ -26,6 +26,8 @@ for epoch, (input, target) in enumerate(train_loader, 1):
     input = Variable(input)
     target = Variable(target)
 
+    optimizer.zero_grad()
+
     output = model(input)
     criterion = torch.nn.MultiMarginLoss(2, 0.9, size_average=False)
     loss = criterion(output.norm(dim=1), target)

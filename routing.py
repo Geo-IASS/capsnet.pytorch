@@ -27,12 +27,14 @@ class Routing(nn.Module):
         pred = torch.stack([torch.stack(p) for p in pred]).view(self.num_shared * h * w, -1)
 
         c = F.softmax(self.b)
-        s = torch.matmul(c.t(), pred)
+        s = torch.matmul(c.t(), pred).t()
         v = squash(s)
-        self.b = torch.add(self.b, torch.matmul(pred, v.t()))
+        self.b = torch.add(self.b, torch.matmul(pred, v))
         return v
 
 
 if __name__ == '__main__':
     l = Routing(4 * 6 * 6, 10, 8, 16, 4)
-    print(l(Variable(torch.rand(1, 32, 6, 6))))
+    t = Variable(torch.rand(1, 32, 6, 6))
+    for i in range(10):
+        l(t)
