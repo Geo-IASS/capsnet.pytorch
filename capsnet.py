@@ -12,8 +12,8 @@ class CapsNet(nn.Module):
         self.with_reconstruction = with_reconstruction
 
         self.conv1 = nn.Conv2d(1, 256, 9)
-        self.primary_caps = nn.Conv2d(256, 32, 9, stride=2)
-        self.digit_caps = Routing(4 * 6 * 6, 10, 8, 16, 4)
+        self.primary_caps = nn.Conv2d(256, 32 * 8, 9, stride=2)
+        self.digit_caps = Routing(32 * 6 * 6, 10, 8, 16, 32)
         
         if with_reconstruction:
             self.fc1 = nn.Linear(160, 512)
